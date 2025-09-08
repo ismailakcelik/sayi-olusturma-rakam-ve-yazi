@@ -271,16 +271,13 @@
         div.className = "ogrenci";
         div.textContent = isim;
         div.onclick = function () {
-  if (div.classList.contains("dogru")) {
-    // Eğer zaten seçiliyse: puanı geri al, sınıfı kaldır
-    div.classList.remove("dogru");
-    puanlar[isim] = Math.max(0, puanlar[isim] - 1); // puan 0'ın altına inmesin
-  } else {
-    // Eğer seçili değilse: puan ver, sınıfı ekle
-    div.classList.add("dogru");
-    puanlar[isim]++;
-  }
-};
+          if (!div.classList.contains("dogru")) {
+            div.classList.add("dogru");
+            puanlar[isim]++;
+          }
+        };
+        ogrenciAlani.appendChild(div);
+      });
     }
 
     function sayiUret() {
