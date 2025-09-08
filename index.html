@@ -2,9 +2,10 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Etkinlik: Doğru Öğrenciyi Seç</title>
+  <title>Sayı Oyunu</title>
   <style>
     :root { --bg-color: #f0f8ff; }
+
     body {
       background-color: var(--bg-color);
       font-family: Arial, sans-serif;
@@ -12,252 +13,353 @@
       padding: 0;
       display: flex;
       justify-content: center;
-      align-items: center;
-      height: 100vh;
+      align-items: flex-start;
+      min-height: 100vh;
       transition: background-color 0.5s;
     }
+
     .kapsayici {
-      text-align: center;
       background-color: white;
-      padding: 30px;
+      margin-top: 20px;
+      padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-      width: 90%;
-      max-width: 700px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      width: 95%;
+      max-width: 850px;
+      text-align: center;
     }
+
+    textarea, input[type="text"] {
+      padding: 6px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-bottom: 10px;
+    }
+
     textarea {
       width: 100%;
-      height: 150px;
-      font-size: 16px;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 15px;
+      height: 100px;
       resize: none;
     }
+
     .hidden { display: none; }
+
+    input[type="number"] {
+      padding: 6px;
+      font-size: 14px;
+      width: 150px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin: 5px;
+    }
+
     .btn {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 10px 5px;
+      padding: 8px 14px;
+      font-size: 14px;
+      margin: 5px;
       cursor: pointer;
       background-color: #4CAF50;
       color: white;
       border: none;
-      border-radius: 8px;
-      transition: background-color 0.3s;
+      border-radius: 6px;
     }
-    .btn:hover { background-color: #45a049; }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
     #sonSayi {
-      font-size: 50px;
+      font-size: 40px;
       font-weight: bold;
-      margin: 20px 0;
-      color: #333;
+      margin: 10px 0;
     }
+
     .ogrenci-listesi {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
       gap: 10px;
       margin-top: 25px;
       max-height: 300px;
       overflow-y: auto;
       padding: 10px;
     }
+
     .ogrenci {
-  font-size: 13px;
-  padding: 6px;
-  min-height: 50px;
+      width: 70px;
+      height: 60px;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 8px;
       background-color: #e0e0e0;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      padding: 10px;
-      min-height: 70px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      user-select: none;
-      min-width: 100px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.3s;
     }
+
     .ogrenci:hover { transform: scale(1.05); }
     .dogru {
       background-color: #ffcc80 !important;
       font-weight: bold;
       box-shadow: 0 0 8px rgba(0,0,0,0.2);
     }
-    .puan {
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
       font-size: 14px;
+      text-align: center;
+    }
+
+    #puanAlani { margin-top: 20px; }
+    .puan-butonu { background-color: #2196F3; }
+    .puan-sifirla { background-color: #f44336; }
+
+    #puanTablosu {
+      margin-top: 15px;
+    }
+
+    #puanTablosu table {
+      width: 60%;
+      margin: 10px auto;
+      border-collapse: collapse;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    #puanTablosu th, #puanTablosu td {
+      padding: 6px 10px;
+      font-size: 14px;
+      text-align: center;
+      border: 1px solid #ccc;
+    }
+
+    #puanTablosu h4 {
+      margin-top: 10px;
+      margin-bottom: 8px;
+    }
+
+    .ilk-uc-wrapper {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
+    .ilk-uc-kutu {
+      background-color: #fff9c4;
+      border: 2px solid #ccc;
+      border-radius: 12px;
+      padding: 10px;
+      width: 150px;
+      height: 120px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      text-align: center;
+      display: grid;
+      grid-template-rows: 1fr 1fr 1fr 1fr;
+      align-items: center;
+      font-weight: bold;
+      box-sizing: border-box;
+    }
+
+    .ilk-uc-kutu span.madalya {
+      font-size: 24px;
+      display: block;
+    }
+
+    .ilk-uc-kutu .isim {
+      font-size: 15px;
+      line-height: 1.2;
+      grid-row: 2 / span 2;
+    }
+
+    .ilk-uc-kutu .puan {
+      font-size: 14px;
+      font-weight: normal;
       color: #444;
-      margin-top: 5px;
+    }
+
+    .ilk-1 { background-color: #ffe082; }
+    .ilk-2 { background-color: #e0e0e0; }
+    .ilk-3 { background-color: #d7ccc8; }
+
+    .ilk-uc-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 10px 0;
+      flex-wrap: wrap;
     }
   </style>
 </head>
 <body>
   <div class="kapsayici">
-    <div id="girisAlani">
-      <p>Etkinlik başlığını ve öğrenci adlarını gir:</p>
-      <input type="text" id="baslikInput" placeholder="Etkinlik Başlığı (örn: Sayıyı Kim Yaptı?)" style="width:100%; padding:10px; margin-bottom:10px; font-size:16px; border-radius:8px; border:1px solid #ccc;" />
-      <textarea id="ogrenciTextarea" placeholder="Örnek:
-Ayşe
-Ali
-Zeynep"></textarea><br>
-      <button class="btn" onclick="basla()">Başla</button>
+    <div id="girisEkrani">
+      <h3>📝 Etkinliğin Başlığını ve Öğrenci Adlarını Girin 📝</h3>
+      <input type="text" id="baslikInput" placeholder="Etkinlik Başlığı (örn: Sayıyı Kim Yaptı?)" style="width:100%;"><br>
+      <textarea id="ogrenciTextarea" placeholder="Öğrenci isimlerini her satıra bir tane olacak şekilde yazınız."></textarea><br>
+      <button class="btn" onclick="basla()">🏁 BAŞLA 🏁</button>
     </div>
-    <div id="oyunAlani" class="hidden">
+
+    <div id="oyunEkrani" class="hidden">
       <h2 id="baslikAlani"></h2>
-      <div style="margin-bottom: 15px;">
-        <input type="number" id="minBasamak" min="1" max="9" placeholder="Minimum basamak" style="width: 80px; padding:6px; font-size:14px; border-radius:6px; border:1px solid #ccc; margin-right:5px;">
-        <input type="number" id="maxBasamak" min="1" max="9" placeholder="Maksimum basamak" style="width: 80px; padding:6px; font-size:14px; border-radius:6px; border:1px solid #ccc;">
+
+      <div>
+        <label>🧮 Basamak Aralığı 🧮</label><br>
+        <input type="number" id="minBasamak" min="1" max="9" placeholder="En Küçük Basamak">
+        <input type="number" id="maxBasamak" min="1" max="9" placeholder="En Büyük Basamak">
       </div>
-      <button class="btn" onclick="sayiUret()">Sayı Üret</button>
+
+      <div>
+        <button class="btn" onclick="sayiUret()">🔢 Sayı Üret 🔢</button>
+      </div>
+
       <div id="sonSayi">–</div>
+
       <div class="ogrenci-listesi" id="ogrenciler"></div>
-<div style="margin-top: 20px;">
-  <button class="btn" onclick="puanlariSifirla()" style="background-color: #d32f2f;">Puanları Sıfırla</button>
-  
-</div>
 
-<button class="btn" onclick="bitirYarismayi()" style="background-color:#ff8f00;">🏁 Bitir</button>
+      <div id="puanAlani">
+        <button class="btn puan-butonu" onclick="puanTablosunuGoster()">🥇🥈🥉 Puan Tablosunu Göster/Gizle 🥉🥈🥇</button>
+        <button class="btn puan-sifirla" onclick="puanlariSifirla()">🗑️ Puanları Sıfırla 🗑️</button>
+        <div id="ilk-uc-wrapper"></div>
 
-<button class="btn" onclick="togglePuanTablosu()" style="background-color:#6a1b9a;">Puan Tablosunu Göster / Gizle</button>
-<div id="puanTablosu" style="margin-top:20px; font-size:15px; display:none;"></div>
-
+        <div id="puanTablosu" class="hidden">
+          <h4>🥇🥈🥉 Puan Tablosu 🥉🥈🥇</h4>
+          <div class="ilk-uc-container"></div>
+          <table>
+            <thead>
+              <tr><th>İsim</th><th>Puan</th></tr>
+            </thead>
+            <tbody id="puanTabloGovde"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
+
   <script>
-    const arkaPlanRenkleri = [
-      "#f0f8ff", "#e8f5e9", "#fffde7", "#fce4ec", "#f3e5f5",
-      "#ede7f6", "#e0f7fa", "#f1f8e9", "#fbe9e7", "#f9fbe7"
-    ];
-    let ogrenciSkorlari = {};
-    let seciliOgrenciler = [];
-guncellePuanTablosu();
+    const renkler = ["#f0f8ff", "#e8f5e9", "#fffde7", "#fce4ec", "#f3e5f5", "#ede7f6", "#e0f7fa", "#f1f8e9", "#fbe9e7"];
+    let ogrenciler = [];
+    let puanlar = {};
+
     function basla() {
-      const textarea = document.getElementById("ogrenciTextarea");
-      const isimler = textarea.value.split('\n').map(i => i.trim()).filter(i => i !== "");
-      if (isimler.length === 0) {
-        alert("Lütfen en az bir öğrenci adı girin.");
+      const baslik = document.getElementById("baslikInput").value.trim();
+      const metin = document.getElementById("ogrenciTextarea").value.trim();
+      if (!baslik || !metin) {
+        alert("Lütfen başlık ve öğrenci isimlerini doldurun.");
         return;
       }
-      const ogrenciListesi = document.getElementById("ogrenciler");
-      ogrenciListesi.innerHTML = "";
-      ogrenciSkorlari = {};
-      isimler.forEach(isim => {
-        ogrenciSkorlari[isim] = 0;
+      ogrenciler = metin.split('\n').map(i => i.trim()).filter(i => i);
+      puanlar = {};
+      document.getElementById("baslikAlani").textContent = baslik;
+      document.getElementById("girisEkrani").classList.add("hidden");
+      document.getElementById("oyunEkrani").classList.remove("hidden");
+
+      const ogrenciAlani = document.getElementById("ogrenciler");
+      ogrenciAlani.innerHTML = "";
+      ogrenciler.forEach(isim => {
+        puanlar[isim] = 0;
         const div = document.createElement("div");
         div.className = "ogrenci";
-        div.dataset.isim = isim;
-        const adEl = document.createElement("div");
-        adEl.textContent = isim;
-        const puanEl = document.createElement("div");
-        puanEl.className = "puan";
-        puanEl.textContent = "Puan: 0";
-        div.appendChild(adEl);
-        div.appendChild(puanEl);
+        div.textContent = isim;
         div.onclick = function () {
-          if (!div.classList.contains("dogru")) {
-            div.classList.add("dogru");
-            ogrenciSkorlari[isim]++;
-            puanEl.textContent = `Puan: ${ogrenciSkorlari[isim]}`;
-            seciliOgrenciler.push(isim);
-          }
-        };
-        ogrenciListesi.appendChild(div);
-      });
-      document.getElementById("girisAlani").classList.add("hidden");
-      document.getElementById("oyunAlani").classList.remove("hidden");
-      const baslik = document.getElementById("baslikInput").value || "Etkinlik";
-      
-      document.getElementById("baslikAlani").textContent = baslik;
+  if (div.classList.contains("dogru")) {
+    // Eğer zaten seçiliyse: puanı geri al, sınıfı kaldır
+    div.classList.remove("dogru");
+    puanlar[isim] = Math.max(0, puanlar[isim] - 1); // puan 0'ın altına inmesin
+  } else {
+    // Eğer seçili değilse: puan ver, sınıfı ekle
+    div.classList.add("dogru");
+    puanlar[isim]++;
+  }
+};
     }
+
     function sayiUret() {
-      const minBasamak = parseInt(document.getElementById("minBasamak").value);
-      const maxBasamak = parseInt(document.getElementById("maxBasamak").value);
-      if (isNaN(minBasamak) || isNaN(maxBasamak) || minBasamak < 1 || maxBasamak > 9 || minBasamak > maxBasamak) {
-        alert("Lütfen 1 ile 9 arasında geçerli bir basamak aralığı girin.");
+      const min = parseInt(document.getElementById("minBasamak").value);
+      const max = parseInt(document.getElementById("maxBasamak").value);
+      if (isNaN(min) || isNaN(max) || min < 1 || max > 9 || min > max) {
+        alert("Lütfen geçerli bir basamak aralığı girin (1-9).");
         return;
       }
-      const minDeger = Math.pow(10, minBasamak - 1);
-      const maxDeger = Math.pow(10, maxBasamak) - 1;
+      const minDeger = Math.pow(10, min - 1);
+      const maxDeger = Math.pow(10, max) - 1;
       const sayi = Math.floor(Math.random() * (maxDeger - minDeger + 1)) + minDeger;
-      document.getElementById("sonSayi").textContent = sayi;
-      const kutular = document.querySelectorAll(".ogrenci");
-      kutular.forEach(div => div.classList.remove("dogru"));
-      const rastgeleRenk = arkaPlanRenkleri[Math.floor(Math.random() * arkaPlanRenkleri.length)];
-      document.body.style.backgroundColor = rastgeleRenk;
-      seciliOgrenciler = [];
-guncellePuanTablosu();
+
+      const yaziIleMi = Math.random() < 0.5;
+      document.getElementById("sonSayi").textContent = yaziIleMi ? sayiyiYaziyaCevir(sayi) : sayi;
+      document.querySelectorAll(".ogrenci").forEach(div => div.classList.remove("dogru"));
+      document.body.style.backgroundColor = renkler[Math.floor(Math.random() * renkler.length)];
     }
-  
+
+    function sayiyiYaziyaCevir(sayi) {
+      const birler = ["", "bir", "iki", "üç", "dört", "beş", "altı", "yedi", "sekiz", "dokuz"];
+      const onlar = ["", "on", "yirmi", "otuz", "kırk", "elli", "altmış", "yetmiş", "seksen", "doksan"];
+      const yuzler = ["", "yüz", "iki yüz", "üç yüz", "dört yüz", "beş yüz", "altı yüz", "yedi yüz", "sekiz yüz", "dokuz yüz"];
+      if (sayi === 0) return "sıfır";
+
+      let sonuc = "";
+      const s = String(sayi).padStart(9, '0');
+      const m = parseInt(s.slice(0, 3));
+      const b = parseInt(s.slice(3, 6));
+      const y = parseInt(s.slice(6));
+      if (m > 0) sonuc += sayiyiYaziyaCevir(m) + " milyon ";
+      if (b > 0) sonuc += sayiyiYaziyaCevir(b) + " bin ";
+      else if (m > 0 && y > 0) sonuc += "bin ";
+
+      const y1 = Math.floor(y / 100);
+      const y2 = Math.floor((y % 100) / 10);
+      const y3 = y % 10;
+      if (y1 > 0) sonuc += yuzler[y1] + " ";
+      if (y2 > 0) sonuc += onlar[y2] + " ";
+      if (y3 > 0) sonuc += birler[y3];
+
+      return sonuc.trim();
+    }
+
+    function puanTablosunuGoster() {
+      const tabloGovde = document.getElementById("puanTabloGovde");
+      const panel = document.getElementById("puanTablosu");
+      tabloGovde.innerHTML = "";
+      const sirali = [...ogrenciler].sort((a, b) => puanlar[b] - puanlar[a]);
+      const ilkUcDiv = document.createElement("div");
+      ilkUcDiv.className = "ilk-uc-wrapper";
+
+      sirali.slice(0, 3).forEach((isim, index) => {
+        const kutu = document.createElement("div");
+        kutu.className = `ilk-uc-kutu ilk-${index + 1}`;
+        let madalya = index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉";
+        kutu.innerHTML = `<span class="madalya">${madalya}</span><div class="isim">${isim}</div><div class="puan">(${puanlar[isim]})</div>`;
+        ilkUcDiv.appendChild(kutu);
+      });
+
+      const ilkUcContainer = document.querySelector(".ilk-uc-container");
+      ilkUcContainer.innerHTML = "";
+      ilkUcContainer.appendChild(ilkUcDiv);
+
+      sirali.slice(3).forEach(isim => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${isim}</td><td>${puanlar[isim]}</td>`;
+        tabloGovde.appendChild(tr);
+      });
+
+      panel.classList.toggle("hidden");
+    }
+
     function puanlariSifirla() {
-      Object.keys(ogrenciSkorlari).forEach(isim => {
-        ogrenciSkorlari[isim] = 0;
-      });
-      document.querySelectorAll(".ogrenci").forEach(div => {
-        const puanEl = div.querySelector(".puan");
-        if (puanEl) puanEl.textContent = "Puan: 0";
-        div.classList.remove("dogru");
-      });
-      guncellePuanTablosu();
+      if (confirm("Tüm puanlar sıfırlansın mı?")) {
+        ogrenciler.forEach(isim => puanlar[isim] = 0);
+        puanTablosunuGoster();
+      }
     }
-
-    function guncellePuanTablosu() {
-      const tablo = document.getElementById("puanTablosu");
-      const sirali = Object.entries(ogrenciSkorlari).sort((a,b) => b[1] - a[1]);
-      let html = "<h3>🏆 Puan Tablosu</h3><ol>";
-      sirali.forEach(([isim, puan]) => {
-        html += `<li>${isim}: ${puan} puan</li>`;
-      });
-      html += "</ol>";
-      tablo.innerHTML = html;
-    }
-
-    function sinifListesiniKaydet() {
-      const isimler = Object.keys(ogrenciSkorlari);
-      const blob = new Blob([isimler.join("\n")], { type: "text/plain" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "sinif-listesi.txt";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-
-
-    function togglePuanTablosu() {
-      const tablo = document.getElementById("puanTablosu");
-      tablo.style.display = (tablo.style.display === "none") ? "block" : "none";
-    }
-
-
-function rastgeleOgrenciSec() {
-  if (ogrenciler.length === 0) return;
-  const secilen = ogrenciler[Math.floor(Math.random() * ogrenciler.length)];
-  document.getElementById("rastgeleSecilen").textContent = "Seçilen Öğrenci: " + secilen;
-}
-
-
-
-
-function bitirYarismayi() {
-  const tablo = document.getElementById("puanTablosu");
-  const sirali = Object.entries(puanlar)
-    .filter(([isim]) => ogrenciler.includes(isim))
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3);
-
-  let icerik = "<h3>🏆 İlk 3</h3><ol>";
-  sirali.forEach(([isim, puan]) => {
-    icerik += `<li><strong>${isim}</strong>: ${puan} puan</li>`;
-  });
-  icerik += "</ol>";
-
-  tablo.innerHTML = icerik;
-  tablo.style.display = "block";
-}
-
-
-</script>
+  </script>
 </body>
 </html>
