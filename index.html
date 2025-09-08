@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <title>Sayı Oyunu</title>
   <style>
-    :root { --bg-color: #f0f8ff; }
+    :root {
+      --bg-color: #f0f8ff;
+    }
 
     body {
       background-color: var(--bg-color);
@@ -29,7 +31,7 @@
       text-align: center;
     }
 
-    textarea, input[type="text"] {
+    textarea, input[type="text"], input[type="number"] {
       padding: 6px;
       font-size: 14px;
       border-radius: 6px;
@@ -46,11 +48,7 @@
     .hidden { display: none; }
 
     input[type="number"] {
-      padding: 6px;
-      font-size: 14px;
       width: 150px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
       margin: 5px;
     }
 
@@ -65,9 +63,7 @@
       border-radius: 6px;
     }
 
-    .btn:hover {
-      background-color: #45a049;
-    }
+    .btn:hover { background-color: #45a049; }
 
     #sonSayi {
       font-size: 40px;
@@ -100,6 +96,7 @@
     }
 
     .ogrenci:hover { transform: scale(1.05); }
+
     .dogru {
       background-color: #ffcc80 !important;
       font-weight: bold;
@@ -119,7 +116,10 @@
       text-align: center;
     }
 
-    #puanAlani { margin-top: 20px; }
+    #puanAlani {
+      margin-top: 20px;
+    }
+
     .puan-butonu { background-color: #2196F3; }
     .puan-sifirla { background-color: #f44336; }
 
@@ -139,11 +139,6 @@
       font-size: 14px;
       text-align: center;
       border: 1px solid #ccc;
-    }
-
-    #puanTablosu h4 {
-      margin-top: 10px;
-      margin-bottom: 8px;
     }
 
     .ilk-uc-wrapper {
@@ -167,7 +162,6 @@
       grid-template-rows: 1fr 1fr 1fr 1fr;
       align-items: center;
       font-weight: bold;
-      box-sizing: border-box;
     }
 
     .ilk-uc-kutu span.madalya {
@@ -177,7 +171,6 @@
 
     .ilk-uc-kutu .isim {
       font-size: 15px;
-      line-height: 1.2;
       grid-row: 2 / span 2;
     }
 
@@ -198,6 +191,44 @@
       margin: 10px 0;
       flex-wrap: wrap;
     }
+
+    /* 🎯 MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 99;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-icerik {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      max-width: 80%;
+      margin: 100px auto;
+      text-align: center;
+    }
+
+    .modal-btnlar {
+      margin-top: 15px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .modal-btnlar button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .evet-btn { background: #4CAF50; color: white; }
+    .hayir-btn { background: #f44336; color: white; }
   </style>
 </head>
 <body>
@@ -205,13 +236,12 @@
     <div id="girisEkrani">
       <h3>📝 Etkinliğin Başlığını ve Öğrenci Adlarını Girin 📝</h3>
       <input type="text" id="baslikInput" placeholder="Etkinlik Başlığı (örn: Sayıyı Kim Yaptı?)" style="width:100%;"><br>
-      <textarea id="ogrenciTextarea" placeholder="Öğrenci isimlerini her satıra bir tane olacak şekilde yazınız."></textarea><br>
+      <textarea id="ogrenciTextarea" placeholder="Her satıra bir öğrenci adı yazınız."></textarea><br>
       <button class="btn" onclick="basla()">🏁 BAŞLA 🏁</button>
     </div>
 
     <div id="oyunEkrani" class="hidden">
       <h2 id="baslikAlani"></h2>
-
       <div>
         <label>🧮 Basamak Aralığı 🧮</label><br>
         <input type="number" id="minBasamak" min="1" max="9" placeholder="En Küçük Basamak">
@@ -223,40 +253,41 @@
       </div>
 
       <div id="sonSayi">–</div>
-
       <div class="ogrenci-listesi" id="ogrenciler"></div>
 
       <div id="puanAlani">
-        <button class="btn puan-butonu" onclick="puanTablosunuGoster()">🥇🥈🥉 Puan Tablosunu Göster/Gizle 🥉🥈🥇</button>
-        <button class="btn puan-sifirla" onclick="puanlariSifirla()">🗑️ Puanları Sıfırla 🗑️</button>
-        <div id="ilk-uc-wrapper"></div>
-
+        <button class="btn puan-butonu" onclick="puanTablosunuGoster()">🥇 Puan Tablosu 🥇</button>
+        <button class="btn puan-sifirla" onclick="modalAc()">🗑️ Puanları Sıfırla</button>
+        <div class="ilk-uc-container"></div>
         <div id="puanTablosu" class="hidden">
           <h4>🥇🥈🥉 Puan Tablosu 🥉🥈🥇</h4>
-          <div class="ilk-uc-container"></div>
-          <table>
-            <thead>
-              <tr><th>İsim</th><th>Puan</th></tr>
-            </thead>
-            <tbody id="puanTabloGovde"></tbody>
-          </table>
+          <div id="ilk-uc-wrapper" class="ilk-uc-wrapper"></div>
+          <table><thead><tr><th>İsim</th><th>Puan</th></tr></thead><tbody id="puanTabloGovde"></tbody></table>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal">
+    <div class="modal-icerik">
+      <p>Tüm puanları sıfırlamak istiyor musun?</p>
+      <div class="modal-btnlar">
+        <button class="evet-btn" onclick="puanlariSifirla(); modalKapat()">Evet</button>
+        <button class="hayir-btn" onclick="modalKapat()">Hayır</button>
       </div>
     </div>
   </div>
 
   <script>
     const renkler = ["#f0f8ff", "#e8f5e9", "#fffde7", "#fce4ec", "#f3e5f5", "#ede7f6", "#e0f7fa", "#f1f8e9", "#fbe9e7"];
-    let ogrenciler = [];
-    let puanlar = {};
+    let ogrenciler = [], puanlar = {};
 
     function basla() {
       const baslik = document.getElementById("baslikInput").value.trim();
       const metin = document.getElementById("ogrenciTextarea").value.trim();
-      if (!baslik || !metin) {
-        alert("Lütfen başlık ve öğrenci isimlerini doldurun.");
-        return;
-      }
+      if (!baslik || !metin) return alert("Lütfen başlık ve öğrenci adlarını doldurun.");
+
       ogrenciler = metin.split('\n').map(i => i.trim()).filter(i => i);
       puanlar = {};
       document.getElementById("baslikAlani").textContent = baslik;
@@ -271,7 +302,10 @@
         div.className = "ogrenci";
         div.textContent = isim;
         div.onclick = function () {
-          if (!div.classList.contains("dogru")) {
+          if (div.classList.contains("dogru")) {
+            div.classList.remove("dogru");
+            puanlar[isim]--;
+          } else {
             div.classList.add("dogru");
             puanlar[isim]++;
           }
@@ -284,63 +318,34 @@
       const min = parseInt(document.getElementById("minBasamak").value);
       const max = parseInt(document.getElementById("maxBasamak").value);
       if (isNaN(min) || isNaN(max) || min < 1 || max > 9 || min > max) {
-        alert("Lütfen geçerli bir basamak aralığı girin (1-9).");
+        alert("Geçerli basamak aralığı girin (1-9)");
         return;
       }
+
       const minDeger = Math.pow(10, min - 1);
       const maxDeger = Math.pow(10, max) - 1;
       const sayi = Math.floor(Math.random() * (maxDeger - minDeger + 1)) + minDeger;
-
-      const yaziIleMi = Math.random() < 0.5;
-      document.getElementById("sonSayi").textContent = yaziIleMi ? sayiyiYaziyaCevir(sayi) : sayi;
+      document.getElementById("sonSayi").textContent = sayi;
       document.querySelectorAll(".ogrenci").forEach(div => div.classList.remove("dogru"));
       document.body.style.backgroundColor = renkler[Math.floor(Math.random() * renkler.length)];
-    }
-
-    function sayiyiYaziyaCevir(sayi) {
-      const birler = ["", "bir", "iki", "üç", "dört", "beş", "altı", "yedi", "sekiz", "dokuz"];
-      const onlar = ["", "on", "yirmi", "otuz", "kırk", "elli", "altmış", "yetmiş", "seksen", "doksan"];
-      const yuzler = ["", "yüz", "iki yüz", "üç yüz", "dört yüz", "beş yüz", "altı yüz", "yedi yüz", "sekiz yüz", "dokuz yüz"];
-      if (sayi === 0) return "sıfır";
-
-      let sonuc = "";
-      const s = String(sayi).padStart(9, '0');
-      const m = parseInt(s.slice(0, 3));
-      const b = parseInt(s.slice(3, 6));
-      const y = parseInt(s.slice(6));
-      if (m > 0) sonuc += sayiyiYaziyaCevir(m) + " milyon ";
-      if (b > 0) sonuc += sayiyiYaziyaCevir(b) + " bin ";
-      else if (m > 0 && y > 0) sonuc += "bin ";
-
-      const y1 = Math.floor(y / 100);
-      const y2 = Math.floor((y % 100) / 10);
-      const y3 = y % 10;
-      if (y1 > 0) sonuc += yuzler[y1] + " ";
-      if (y2 > 0) sonuc += onlar[y2] + " ";
-      if (y3 > 0) sonuc += birler[y3];
-
-      return sonuc.trim();
     }
 
     function puanTablosunuGoster() {
       const tabloGovde = document.getElementById("puanTabloGovde");
       const panel = document.getElementById("puanTablosu");
       tabloGovde.innerHTML = "";
-      const sirali = [...ogrenciler].sort((a, b) => puanlar[b] - puanlar[a]);
-      const ilkUcDiv = document.createElement("div");
-      ilkUcDiv.className = "ilk-uc-wrapper";
 
+      const sirali = [...ogrenciler].sort((a, b) => puanlar[b] - puanlar[a]);
+
+      const ilkUcDiv = document.getElementById("ilk-uc-wrapper");
+      ilkUcDiv.innerHTML = "";
       sirali.slice(0, 3).forEach((isim, index) => {
         const kutu = document.createElement("div");
         kutu.className = `ilk-uc-kutu ilk-${index + 1}`;
-        let madalya = index === 0 ? "🥇" : index === 1 ? "🥈" : "🥉";
+        let madalya = ["🥇", "🥈", "🥉"][index];
         kutu.innerHTML = `<span class="madalya">${madalya}</span><div class="isim">${isim}</div><div class="puan">(${puanlar[isim]})</div>`;
         ilkUcDiv.appendChild(kutu);
       });
-
-      const ilkUcContainer = document.querySelector(".ilk-uc-container");
-      ilkUcContainer.innerHTML = "";
-      ilkUcContainer.appendChild(ilkUcDiv);
 
       sirali.slice(3).forEach(isim => {
         const tr = document.createElement("tr");
@@ -352,11 +357,13 @@
     }
 
     function puanlariSifirla() {
-      if (confirm("Tüm puanlar sıfırlansın mı?")) {
-        ogrenciler.forEach(isim => puanlar[isim] = 0);
-        puanTablosunuGoster();
-      }
+      ogrenciler.forEach(isim => puanlar[isim] = 0);
+      document.querySelectorAll(".ogrenci").forEach(div => div.classList.remove("dogru"));
+      puanTablosunuGoster();
     }
+
+    function modalAc() { document.getElementById("modal").style.display = "block"; }
+    function modalKapat() { document.getElementById("modal").style.display = "none"; }
   </script>
 </body>
 </html>
